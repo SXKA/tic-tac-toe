@@ -25,6 +25,8 @@ python main.py
 - Choose whether you want to go first.
 - Enter move positions from 0 to 8 (left to right, top to bottom).
 - The AI plays using greedy Q-values.
+## Demo
+https://github.com/user-attachments/assets/445a1612-f101-4b27-bcf5-7bdbee116661
 ## Training Outcomes Over Episodes
 <div align="center">
 <img src="https://github.com/SXKA/tic-tac-toe/blob/main/png/q_learning_result.png" alt="q_learning_result"/>
