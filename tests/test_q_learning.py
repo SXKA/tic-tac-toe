@@ -126,3 +126,33 @@ def test_obs_to_state_round_trips_with_ternary(q_learning):
     state = q_learning.obs_to_state(board)
     digits = q_learning.ternary(int(state))[::-1]
     assert [int(d) for d in digits] == list(board.flatten())
+
+
+def test_stable_softmax_handles_large_q_values(q_learning):
+    q = np.array([5.0, 4.0, -5.0])
+    p = q_learning.stable_softmax(q / q_learning.TAU)
+    assert np.all(np.isfinite(p))
+    assert p.sum() == pytest.approx(1.0)
+    assert p[0] > p[1] > p[2]
+
+
+def test_softmax_legal_action_never_picks_occupied_cell(q_learning):
+    board = np.array([[1, 2, 1], [2, 0, 1], [2, 1, 0]])
+    state = q_learning.obs_to_state(board)
+    q = np.full((3 ** 9, 9), 3.0)
+    for _ in range(50):
+        assert q_learning.softmax_legal_action(q, state) in (4, 8)
+
+
+def test_plot_history_does_not_block_during_training(q_learning, monkeypatch, tmp_path):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    show = []
+    monkeypatch.setattr(q_learning.plt, "show", lambda: show.append(True))
+    monkeypatch.chdir(tmp_path)
+
+    q_learning.plot_history([0, 1], [0, 0], [0, 1], [0, 0], show=False)
+
+    assert show == []
+    assert (tmp_path / "q_learning_result.png").exists()

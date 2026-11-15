@@ -106,13 +106,16 @@ def q_learning(env: TicTacToeMultiAgentEnvironment):
                 win_2.append(win_2[-1] + win_count_2)
 
             if i % PLOT_INTERVAL == 0:
-                plot_history(illegal, draw, win_1, win_2)
+                # Save only: plt.show() here blocked training until the window
+                # was closed, every PLOT_INTERVAL iterations.
+                plot_history(illegal, draw, win_1, win_2, show=False)
 
     except KeyboardInterrupt:
         print("Interrupting training, plotting history...")
-        plot_history(illegal, draw, win_1, win_2)
-        save_q_table(QTable(q_table_1))
 
+    # Plot and save once, whether training finished or was interrupted (the
+    # table used to be saved twice on interrupt).
+    plot_history(illegal, draw, win_1, win_2, show=True)
     save_q_table(QTable(q_table_1))
 
 
@@ -180,8 +183,7 @@ def obs_to_state(obs: np.ndarray) -> int:
 def softmax_action(q_table: np.ndarray, state: int) -> float:
     actions = np.arange(9)
 
-    exps = np.exp(q_table[state] / TAU)
-    p = exps / np.sum(exps)
+    p = stable_softmax(q_table[state] / TAU)
     return np.random.choice(actions, replace=False, p=p)
 
 
@@ -189,9 +191,24 @@ def softmax_legal_action(q_table: np.ndarray, state: int) -> float:
     state_t = np.array([c for c in ternary(state)][::-1])
     actions = np.where(state_t == '0')[0]
 
-    exps = np.exp(q_table[state, actions] / TAU)
-    p = exps / np.sum(exps)
+    p = stable_softmax(q_table[state, actions] / TAU)
     return np.random.choice(actions, replace=False, p=p)
+
+
+def stable_softmax(logits: np.ndarray) -> np.ndarray:
+    """Softmax that subtracts the maximum first.
+
+    With TAU = 5e-3, Q values are scaled by 200, so exp() overflows to inf
+    (or underflows to all zeros) and the probabilities become NaN.
+
+    Args:
+        logits (np.ndarray): Unnormalized log-probabilities.
+
+    Returns:
+        np.ndarray: Probabilities summing to 1.
+    """
+    exps = np.exp(logits - np.max(logits))
+    return exps / np.sum(exps)
 
 
 @lru_cache(3 ** 9)
@@ -199,16 +216,32 @@ def ternary(num: int) -> str:
     return np.base_repr(num, 3).zfill(9)
 
 
-def plot_history(illegal, draw: List, win_1: List, win_2: List):
-    sns.lineplot(illegal, label="Illegal Ending")
-    sns.lineplot(draw, label="Draw")
-    sns.lineplot(win_1, label="Agent 1")
-    sns.lineplot(win_2, label="Agent 2")
+def plot_history(illegal, draw: List, win_1: List, win_2: List, show: bool = False):
+    """Plot cumulative game outcomes and save them to q_learning_result.png.
 
+    Args:
+        illegal (List): Cumulative games ended by an illegal move.
+        draw (List): Cumulative draws.
+        win_1 (List): Cumulative wins of agent 1.
+        win_2 (List): Cumulative wins of agent 2.
+        show (bool): Whether to also display the figure (blocks until closed).
+    """
+    # Clear first: every call used to draw on top of the previous lines.
+    # plt.plot is used instead of sns.lineplot, which aggregates and is much
+    # slower on millions of points.
+    plt.clf()
+    plt.plot(illegal, label="Illegal Ending")
+    plt.plot(draw, label="Draw")
+    plt.plot(win_1, label="Agent 1")
+    plt.plot(win_2, label="Agent 2")
+
+    plt.legend()
     plt.xlabel("iterations")
     plt.ylabel("count")
     plt.savefig("q_learning_result.png")
-    plt.show()
+
+    if show:
+        plt.show()
 
 
 def save_q_table(q_table: QTable):
