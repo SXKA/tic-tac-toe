@@ -1,13 +1,9 @@
 from typing import Dict
 
 import numpy as np
-
 from tf_agents.environments.examples.tic_tac_toe_environment import TicTacToeEnvironment
 from tf_agents.specs import BoundedArraySpec
-from tf_agents.trajectories.time_step import (
-    StepType,
-    TimeStep
-)
+from tf_agents.trajectories.time_step import StepType, TimeStep
 
 REWARD_ILLEGAL_MOVE = np.asarray(-5, dtype=np.float32)
 
@@ -40,7 +36,7 @@ class TicTacToeMultiAgentEnvironment(TicTacToeEnvironment):
             return self._reset()
 
         index_flat = np.array(range(9)) == action["position"]
-        index = index_flat.reshape(self._states.shape) == True
+        index = index_flat.reshape(self._states.shape)
         if self._states[index] != 0:
             return TimeStep(StepType.LAST,
                             REWARD_ILLEGAL_MOVE,

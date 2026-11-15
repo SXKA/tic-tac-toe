@@ -1,5 +1,4 @@
 import numpy as np
-
 from tf_agents.trajectories.policy_step import PolicyStep
 from tf_agents.trajectories.time_step import TimeStep
 

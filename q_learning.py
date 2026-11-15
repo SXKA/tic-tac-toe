@@ -1,22 +1,15 @@
 import pickle
 import random
-
 from functools import lru_cache
 from itertools import cycle
-from typing import (
-    List,
-    Tuple
-)
+from typing import List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
 from q_table import QTable
-from tic_tac_toe_multi_agent_environment import (
-    REWARD_ILLEGAL_MOVE,
-    TicTacToeMultiAgentEnvironment
-)
+from tic_tac_toe_multi_agent_environment import REWARD_ILLEGAL_MOVE, TicTacToeMultiAgentEnvironment
 
 # Hyperparameters
 NUM_ITERATIONS = 2000000
