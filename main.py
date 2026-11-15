@@ -24,7 +24,7 @@ def main():
 
     while True:
         if first:
-            ts = tf_ttt_env.step({"position": int(input("Move pos: ")), "value": 1})
+            ts = tf_ttt_env.step({"position": ask_move(ts), "value": 1})
             print_tic_tac_toe(ts.observation.numpy())
 
             if ts.is_last():
@@ -56,7 +56,7 @@ def main():
                     print("Computer win!")
                 break
 
-            ts = tf_ttt_env.step({"position": int(input("Move pos: ")), "value": 2})
+            ts = tf_ttt_env.step({"position": ask_move(ts), "value": 2})
             print_tic_tac_toe(ts.observation.numpy())
 
             if ts.is_last():
@@ -67,6 +67,28 @@ def main():
                 else:
                     print("Human win!")
                 break
+
+
+def ask_move(ts: TimeStep) -> int:
+    """Ask the human for a move until it is a free cell 0-8.
+
+    A typo used to crash the game (ValueError) or end it as an illegal move.
+
+    Args:
+        ts (TimeStep): Current time step; its observation is the board.
+
+    Returns:
+        int: Board position 0-8.
+    """
+    board = ts.observation.numpy().reshape(-1)
+
+    while True:
+        text = input("Move pos (0-8): ").strip()
+
+        if text.isdigit() and 0 <= int(text) <= 8 and board[int(text)] == 0:
+            return int(text)
+
+        print("Please enter the number of an empty cell (0-8).")
 
 
 def policy_step(env: TFPyEnvironment, policy, ts: TimeStep, value: int) -> TimeStep:
