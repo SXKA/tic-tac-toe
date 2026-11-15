@@ -1,0 +1,40 @@
+[project]
+name = "tic-tac-toe"
+version = "0.1.0"
+description = "Tic-tac-toe agents trained with tabular Q-learning and self-play."
+readme = "README.md"
+requires-python = ">=3.10,<3.12"
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "seaborn",
+    "tensorflow==2.15.0",
+    "tf-agents==0.19.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+# The tests stub the deep-learning stack, so CI installs only this group.
+test = [
+    "matplotlib",
+    "numpy",
+    "pytest",
+    "seaborn",
+]
+
+[tool.uv]
+# Scripts, not an installable package.
+package = false
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

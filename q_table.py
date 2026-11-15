@@ -1,5 +1,4 @@
 import numpy as np
-
 from tf_agents.trajectories.policy_step import PolicyStep
 from tf_agents.trajectories.time_step import TimeStep
 
@@ -15,4 +14,4 @@ class QTable:
         state = obs_to_state(obs.numpy())
         action = np.argmax(self.q_table[state])
 
-        return PolicyStep(action, state + 3 ** action, self.q_table[state, action])
+        return PolicyStep(action, state + 3**action, self.q_table[state, action])

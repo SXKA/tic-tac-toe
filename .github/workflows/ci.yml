@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      # Use the ruff version pinned in uv.lock.
+      - run: uv run --only-group dev ruff check .
+      - run: uv run --only-group dev ruff format --check .
+      # The tests stub the deep-learning stack, so only the test group is installed.
+      - run: uv sync --only-group test
+      - run: uv run --only-group test pytest
+        env:
+          MPLBACKEND: Agg

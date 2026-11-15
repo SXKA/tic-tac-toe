@@ -1,15 +1,10 @@
 import pickle
 
 import tensorflow as tf
-
 from tf_agents.environments.tf_py_environment import TFPyEnvironment
 from tf_agents.trajectories.time_step import TimeStep
 
-from tic_tac_toe_multi_agent_environment import (
-    print_tic_tac_toe,
-    REWARD_ILLEGAL_MOVE,
-    TicTacToeMultiAgentEnvironment
-)
+from tic_tac_toe_multi_agent_environment import REWARD_ILLEGAL_MOVE, TicTacToeMultiAgentEnvironment, print_tic_tac_toe
 
 
 def main():
@@ -20,7 +15,7 @@ def main():
         q_table = pickle.load(f)
 
     policy = q_table
-    first = input("First? (Y/N): ").upper() == 'Y'
+    first = input("First? (Y/N): ").upper() == "Y"
 
     while True:
         if first:

@@ -10,17 +10,21 @@ This is a terminal-based Tic‑Tac‑Toe game implemented in Python.
 - **Q-Table Persistence**  
   Save/load `q_table.pkl` for faster iteration or deployment.
 ## Usage
+Install the dependencies with [uv](https://docs.astral.sh/uv/):
+```bash
+uv sync
+```
 ### Training the Agent
 Run the training loop where two agents take turns and update the Q-table:
 ```bash
-python q_learning.py
+uv run python q_learning.py
 ```
 - Hyperparameters (learning rate, ε-greedy strategy, number of episodes) can be adjusted at the top of the file.
 - A `q_table.pkl` will be saved at the end of training.
 ### Play Against the AI
 Use the trained Q-table to play interactively:
 ```bash
-python main.py
+uv run python main.py
 ```
 - Choose whether you want to go first.
 - Enter move positions from 0 to 8 (left to right, top to bottom).

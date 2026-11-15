@@ -73,8 +73,8 @@ def q_learning():
 def run_one_move(q_learning, monkeypatch, board, action, replies=()):
     """Let player 1 play `action` from `board`, followed by scripted replies."""
     env = FakeEnv(board)
-    q_a = np.zeros((3 ** 9, 9))
-    q_b = np.zeros((3 ** 9, 9))
+    q_a = np.zeros((3**9, 9))
+    q_b = np.zeros((3**9, 9))
     # A large value everywhere makes any accidental bootstrap visible.
     q_a[:, :] = 100.0
     state = q_learning.obs_to_state(board)
@@ -108,7 +108,7 @@ def test_losing_reply_does_not_bootstrap(q_learning, monkeypatch):
 def test_non_terminal_move_bootstraps(q_learning, monkeypatch):
     board = np.zeros((3, 3), dtype=np.int32)
     env = FakeEnv(board)
-    q_a = np.zeros((3 ** 9, 9))
+    q_a = np.zeros((3**9, 9))
     after = np.zeros((3, 3), dtype=np.int32)
     after[0, 0], after[1, 1] = 1, 2
     q_a[q_learning.obs_to_state(after), :] = 10.0
@@ -139,7 +139,7 @@ def test_stable_softmax_handles_large_q_values(q_learning):
 def test_softmax_legal_action_never_picks_occupied_cell(q_learning):
     board = np.array([[1, 2, 1], [2, 0, 1], [2, 1, 0]])
     state = q_learning.obs_to_state(board)
-    q = np.full((3 ** 9, 9), 3.0)
+    q = np.full((3**9, 9), 3.0)
     for _ in range(50):
         assert q_learning.softmax_legal_action(q, state) in (4, 8)
 
