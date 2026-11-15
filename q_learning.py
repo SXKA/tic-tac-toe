@@ -139,7 +139,9 @@ def learning_iteration(env: TicTacToeMultiAgentEnvironment, test_q_table: np.nda
                 if reward == TicTacToeMultiAgentEnvironment.REWARD_LOSS:
                     reward = TicTacToeMultiAgentEnvironment.REWARD_WIN
 
-                y = reward + GAMMA * np.max(q_table[next_state, :])
+                # Terminal transition: no bootstrapping. After an illegal move the board is
+                # unchanged, so bootstrapping would update Q[state] from itself.
+                y = reward
                 q_table[state, action] += LEARNING_RATE * (y - q_table[state, action])
             break
 
@@ -157,7 +159,8 @@ def learning_iteration(env: TicTacToeMultiAgentEnvironment, test_q_table: np.nda
             if value == 2:
                 reward = -reward
 
-            y = reward + GAMMA * np.max(q_table[next_state, :])
+            # Do not bootstrap when the opponent's reply ended the game.
+            y = reward if ts.is_last() else reward + GAMMA * np.max(q_table[next_state, :])
             q_table[state, action] += LEARNING_RATE * (y - q_table[state, action])
 
         # Move to the next state

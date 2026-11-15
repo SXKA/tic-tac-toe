@@ -60,7 +60,12 @@ def main():
             print_tic_tac_toe(ts.observation.numpy())
 
             if ts.is_last():
-                print("Human win!")
+                if ts.reward == REWARD_ILLEGAL_MOVE:
+                    print("Illegal move!")
+                elif ts.reward == TicTacToeMultiAgentEnvironment.REWARD_DRAW_OR_NOT_FINAL:
+                    print("Draw!")
+                else:
+                    print("Human win!")
                 break
 
 
