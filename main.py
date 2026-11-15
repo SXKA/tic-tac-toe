@@ -15,7 +15,7 @@ def main():
         q_table = pickle.load(f)
 
     policy = q_table
-    first = input("First? (Y/N): ").upper() == 'Y'
+    first = input("First? (Y/N): ").upper() == "Y"
 
     while True:
         if first:

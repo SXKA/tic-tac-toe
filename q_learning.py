@@ -28,7 +28,7 @@ def main():
 
 def q_learning(env: TicTacToeMultiAgentEnvironment):
     num_actions = 9
-    num_states = 3 ** 9
+    num_states = 3**9
     q_table_1 = np.zeros((num_states, num_actions))
     q_table_2 = np.zeros((num_states, num_actions))
 
@@ -112,8 +112,9 @@ def q_learning(env: TicTacToeMultiAgentEnvironment):
     save_q_table(QTable(q_table_1))
 
 
-def learning_iteration(env: TicTacToeMultiAgentEnvironment, test_q_table: np.ndarray, q_tables: cycle, values: cycle,
-                       num_iteration: int) -> Tuple:
+def learning_iteration(
+    env: TicTacToeMultiAgentEnvironment, test_q_table: np.ndarray, q_tables: cycle, values: cycle, num_iteration: int
+) -> Tuple:
     q_table = None
 
     ts = env.current_time_step()
@@ -182,7 +183,7 @@ def softmax_action(q_table: np.ndarray, state: int) -> float:
 
 def softmax_legal_action(q_table: np.ndarray, state: int) -> float:
     state_t = np.array([c for c in ternary(state)][::-1])
-    actions = np.where(state_t == '0')[0]
+    actions = np.where(state_t == "0")[0]
 
     p = stable_softmax(q_table[state, actions] / TAU)
     return np.random.choice(actions, replace=False, p=p)
@@ -204,7 +205,7 @@ def stable_softmax(logits: np.ndarray) -> np.ndarray:
     return exps / np.sum(exps)
 
 
-@lru_cache(3 ** 9)
+@lru_cache(3**9)
 def ternary(num: int) -> str:
     return np.base_repr(num, 3).zfill(9)
 
